@@ -1,11 +1,14 @@
 /*
 the basic idea:
-use 2 range inputs,
-restrict their min/max values depending on each other,
-make original handle alpha 0,
-draw another handle on top which ignores pointer events.
+- use 2 range inputs,
+- right on top of left,
+- restrict their min/max values depending on each other,
+- make original handle alpha 0,
+- draw another handle at same position (quasi on top),
+  which ignores pointer events, making them go to the original handle.
 
-Caveat: the calc of the pos has to match how slider does it internally.
+Caveat: the pos-calc of the handle on top
+has to match how the slider does it internally.
 */
 
 
@@ -14,8 +17,8 @@ const template = document.createElement('template')
 
 template.innerHTML = `<div class="container">
     <div class="slider-track"></div>
-    <input type="range" min="1" max="100" value="20" id="sliderL">
-    <input type="range" min="1" max="100" value="80" id="sliderR">
+    <input type="range" min="1" max="100" value="20" id="sliderL"></input>
+    <input type="range" min="1" max="100" value="80" id="sliderR"></input>
     <div id="thumbtopL" class="thumbtop"></div>
     <div id="thumbtopR" class="thumbtop"></div>
 </div>
@@ -26,10 +29,9 @@ function getCSS(thumbWidthInPixel) {
     .container{
         position: relative;
         width: 100%;
-        height: 100px;
-        //margin-top: 30px;
     }
 
+    /* put sliderR on top of sliderL */
 
     input[type="range"]{
         -webkit-appearance: none;
@@ -41,9 +43,12 @@ function getCSS(thumbWidthInPixel) {
         margin: auto;
         top: 0;
         bottom: 0;
-        background-color: transparent;
+        background-color: blue;
         pointer-events: none;
     }
+
+    /* the tracks */
+
     .slider-track{
         width: 100%;
         height: 5px;
@@ -66,66 +71,57 @@ function getCSS(thumbWidthInPixel) {
         height: 5px;
     }
 
+    /* the original handles/thumbs */
 
     input[type="range"]::-webkit-slider-thumb{
         -webkit-appearance: none;
         height: 30px;
         width: ${thumbWidthInPixel}px;
-        background-color: #0000FF88;
-        //background-color: #ffffff;
-        //border: 3px solid black;
+        margin-top: -14px;
+        background-color: transparent;
         cursor: pointer;
-        margin-top: -12px;
         pointer-events: auto;
-        border-radius: 10%;
     }
     input[type="range"]::-moz-range-thumb{
         -webkit-appearance: none;
-        height: 1.7em;
-        width: 1.7em;
+        height: 30px;
+        width: ${thumbWidthInPixel}px;
+        margin-top: -14px;
+        background-color: transparent;
         cursor: pointer;
-        //border-radius: 50%;
-        background-color: #3264fe;
-        //pointer-events: auto;
+        pointer-events: auto;
     }
     input[type="range"]::-ms-thumb{
         appearance: none;
-        height: 1.7em;
-        width: 1.7em;
+        height: 30px;
+        width: ${thumbWidthInPixel}px;
+        margin-top: -14px;
+        background-color: transparent;
         cursor: pointer;
-        //border-radius: 50%;
-        background-color: #3264fe;
-        //pointer-events: auto;
+        pointer-events: auto;
     }
-    input[type="range"]:focus::-webkit-slider-thumb{
-        background-color: yellow;
-    }
+
+    /* the handles/thumbs on top of the original */
 
     .thumbtop {
         position: absolute; 
         width: ${thumbWidthInPixel}px;
-        height: 30px; 
-        top: 36px; 
-        background-color: #fff;
-        pointer-events: none; 
-        //background-color: #ffffff;
+        height: 30px;
+        margin-top: -16px; 
+        background-color: white;
         border: 3px solid black;
         border-radius: 10px;
+        pointer-events: none; 
+        text-align: center;
+        line-height: 30px;  /* trick to v-center text */
     }
     #thumbTopL {
-        left: 0px; 
-    }
-    #thumbTopL:focus {
-        background-color: yellow;
+        left: 0px;
     }
     #thumbtop2 {
         right: 0px; 
     }
 
-    //input[type="range"]:active::-webkit-slider-thumb{
-    //    background-color: #ffffff;
-    //    border: 3px solid #3264fe;
-    //}
     </style>`
 }
 
@@ -136,7 +132,7 @@ class Element extends HTMLElement {
     #_sliderR
     #_thumbTopL
     #_thumbTopR
-    #_minGap
+    #_minGap        // sliders can't get closer together than this; unit is [value]
     #_sliderTrack
 
 	constructor() {
@@ -161,6 +157,11 @@ class Element extends HTMLElement {
 
         this.#_sliderL.addEventListener('input', (event) => { this.#slideL(); this.#fire() })
         this.#_sliderR.addEventListener('input', (event) => { this.#slideR(); this.#fire() })
+
+        window.addEventListener('resize', () => {
+            this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
+            this.#placeThumbTop(this.#_sliderR, this.#_thumbTopR)
+        });
     }
 
 	static get observedAttributes() {
@@ -206,8 +207,6 @@ class Element extends HTMLElement {
 	}
 
     connectedCallback() {
-        this.#slideL();
-        this.#slideR();
 	}
 
     get valuel() { return this.#_sliderL.value }
