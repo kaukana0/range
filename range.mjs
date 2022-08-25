@@ -80,7 +80,7 @@ function getCSS(thumbWidthInPixel) {
         margin-top: -14px;
         background-color: transparent;
         cursor: pointer;
-        /*pointer-events: auto;*/
+        pointer-events: auto;       /* mind those when debugging */
     }
     input[type="range"]::-moz-range-thumb{
         -webkit-appearance: none;
@@ -89,7 +89,7 @@ function getCSS(thumbWidthInPixel) {
         margin-top: -14px;
         background-color: transparent;
         cursor: pointer;
-        /*pointer-events: auto;*/
+        pointer-events: auto;
     }
     input[type="range"]::-ms-thumb{
         appearance: none;
@@ -98,7 +98,7 @@ function getCSS(thumbWidthInPixel) {
         margin-top: -14px;
         background-color: transparent;
         cursor: pointer;
-        /*pointer-events: auto;*/
+        pointer-events: auto;
     }
 
     /* the handles/thumbs on top of the original */
