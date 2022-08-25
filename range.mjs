@@ -43,7 +43,7 @@ function getCSS(thumbWidthInPixel) {
         margin: auto;
         top: 0;
         bottom: 0;
-        background-color: blue;
+        background-color: transparent;
         pointer-events: none;
     }
 
