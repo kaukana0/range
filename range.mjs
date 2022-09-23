@@ -134,6 +134,7 @@ class Element extends HTMLElement {
     #_thumbTopR
     #_minGap        // sliders can't get closer together than this; unit is [value]
     #_sliderTrack
+    #_isLocked
 
 	constructor() {
 		super()
@@ -148,6 +149,7 @@ class Element extends HTMLElement {
 		this.shadowRoot.appendChild(template.content.cloneNode(true))
 
         this.#_minGap = 1
+        this.#_isLocked = false
 
         this.#_sliderL = this.shadowRoot.getElementById("sliderL")
         this.#_sliderR = this.shadowRoot.getElementById("sliderR")
@@ -155,8 +157,12 @@ class Element extends HTMLElement {
         this.#_thumbTopR = this.shadowRoot.getElementById("thumbtopR")
         this.#_sliderTrack = this.shadowRoot.querySelector(".slider-track")
 
-        this.#_sliderL.addEventListener('input', (event) => { this.#slideL(); this.#fire() })
-        this.#_sliderR.addEventListener('input', (event) => { this.#slideR(); this.#fire() })
+        this.#_sliderL.addEventListener('input', (event) => { this.#slideL(); this.#fireDragging() })
+        this.#_sliderR.addEventListener('input', (event) => { this.#slideR(); this.#fireDragging() })
+        this.#_sliderL.addEventListener('mouseup', (event) => { this.#fireSelected() })
+        this.#_sliderR.addEventListener('mouseup', (event) => { this.#fireSelected() })
+        this.#_sliderL.addEventListener('touchend', (event) => { this.#fireSelected() })
+        this.#_sliderR.addEventListener('touchend', (event) => { this.#fireSelected() })
 
         window.addEventListener('resize', () => {
             this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
@@ -255,9 +261,11 @@ class Element extends HTMLElement {
         thumb.style.left = x +"px"
     }
 
-    #fire() {
+    #fireDragging() {
+        if(this.#_isLocked) {return}
+
         this.dispatchEvent(
-            new CustomEvent("change", { 
+            new CustomEvent("dragging", { 
                 composed: true,
                 detail:{
                     left:this.#_sliderL.value,
@@ -265,6 +273,29 @@ class Element extends HTMLElement {
                 } 
             })
           );
+    }
+
+    #fireSelected() {
+        if(this.#_isLocked) {return}
+
+        this.dispatchEvent(
+            new CustomEvent("selected", { 
+                composed: true,
+                detail:{
+                    left:this.#_sliderL.value,
+                    right:this.#_sliderR.value
+                } 
+            })
+          );
+    }
+
+    store() {}
+    restore() {}    // TODO
+
+    setLocked(isLocked) {
+        this.#_isLocked = isLocked
+        this.#_thumbTopL.style.pointerEvents = isLocked ? "none;" : "auto;"
+        this.#_thumbTopR.style.pointerEvents = isLocked ? "none;" : "auto;"
     }
 }
 
