@@ -17,8 +17,8 @@ const template = document.createElement('template')
 
 template.innerHTML = `<div class="container">
     <div class="slider-track"></div>
-    <input type="range" min="1" max="100" value="20" id="sliderL"></input>
-    <input type="range" min="1" max="100" value="80" id="sliderR"></input>
+    <input type="range" id="sliderL"></input>
+    <input type="range" id="sliderR"></input>
     <div id="thumbtopL" class="thumbtop"></div>
     <div id="thumbtopR" class="thumbtop"></div>
 </div>
@@ -163,6 +163,18 @@ class Element extends HTMLElement {
         this.#_sliderR.addEventListener('mouseup', (event) => { this.#fireSelected() })
         this.#_sliderL.addEventListener('touchend', (event) => { this.#fireSelected() })
         this.#_sliderR.addEventListener('touchend', (event) => { this.#fireSelected() })
+        this.#_sliderL.addEventListener("keyup", ke => {
+            if(this.#_isLocked) {return}
+            if(ke.code.startsWith("Arrow")) {
+				this.#fireDragging(); this.#fireSelected()
+			}
+		})
+        this.#_sliderR.addEventListener("keyup", ke => {
+            if(this.#_isLocked) {return}
+            if(ke.code.startsWith("Arrow")) {
+				this.#fireDragging(); this.#fireSelected()
+			}
+		})
 
         window.addEventListener('resize', () => {
             this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
@@ -175,26 +187,28 @@ class Element extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldVal, newVal) {
-        let slide = false
+        let update = false
         switch(name) {
             case "min":
                 this.#_sliderL.min = Number(newVal)
                 this.#_sliderR.min = Number(newVal)
+                update = true
                 break
             case "max":
                 this.#_sliderL.max = Number(newVal)
                 this.#_sliderR.max = Number(newVal)
+                update = true
                 break
             case "mingap":
                 this.#_minGap = Number(newVal)
                 break
             case "valuel":
                 this.#_sliderL.value = Number(newVal)
-                slide = true
+                update = true
                 break
             case "valuer":
                 this.#_sliderR.value = Number(newVal)
-                slide = true
+                update = true
                 break
             case "textl":
                 this.#_thumbTopL.textContent = newVal
@@ -206,9 +220,11 @@ class Element extends HTMLElement {
                 console.debug("range: no such attribute " + name)
         }
     
-        if(slide) {
-            this.#slideL();
-            this.#slideR();
+        if(update) {
+            this.#slideL()
+            this.#slideR()
+            this.#fireDragging()
+            this.#fireSelected()
         }
 	}
 
