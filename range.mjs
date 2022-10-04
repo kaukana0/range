@@ -187,28 +187,28 @@ class Element extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldVal, newVal) {
-        let update = false
         switch(name) {
             case "min":
                 this.#_sliderL.min = Number(newVal)
                 this.#_sliderR.min = Number(newVal)
-                update = true
+                this.#update()
                 break
             case "max":
                 this.#_sliderL.max = Number(newVal)
                 this.#_sliderR.max = Number(newVal)
-                update = true
+                this.#update()
                 break
             case "mingap":
                 this.#_minGap = Number(newVal)
                 break
             case "valuel":
-                this.#_sliderL.value = Number(newVal)
-                update = true
+                const b = Number(newVal)
+                this.#_sliderL.value = b
+                this.#update()
                 break
             case "valuer":
                 this.#_sliderR.value = Number(newVal)
-                update = true
+                this.#update()
                 break
             case "textl":
                 this.#_thumbTopL.textContent = newVal
@@ -220,16 +220,17 @@ class Element extends HTMLElement {
                 console.debug("range: no such attribute " + name)
         }
     
-        if(update) {
-            this.#slideL()
-            this.#slideR()
-            this.#fireDragging()
-            this.#fireSelected()
-        }
 	}
 
     connectedCallback() {
 	}
+
+    #update() {
+        this.#slideL()
+        this.#slideR()
+        this.#fireDragging()
+        this.#fireSelected()
+    }
 
     get valuel() { return this.#_sliderL.value }
     get valuer() { return this.#_sliderR.value }
