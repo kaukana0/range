@@ -187,6 +187,7 @@ class Element extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldVal, newVal) {
+        //console.log(name,newVal)
         switch(name) {
             case "min":
                 this.#_sliderL.min = Number(newVal)
@@ -200,6 +201,7 @@ class Element extends HTMLElement {
                 break
             case "mingap":
                 this.#_minGap = Number(newVal)
+                this.#update()
                 break
             case "valuel":
                 const b = Number(newVal)
@@ -238,6 +240,7 @@ class Element extends HTMLElement {
     #slideL(){
         if(parseInt(this.#_sliderR.value) - parseInt(this.#_sliderL.value) <= this.#_minGap){
             this.#_sliderL.value = parseInt(this.#_sliderR.value) - this.#_minGap;
+            //console.log("slide l correction", this.#_sliderL.value)
         }
         this.#colorizeTrack();
         this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
@@ -246,6 +249,7 @@ class Element extends HTMLElement {
     #slideR(){
         if(parseInt(this.#_sliderR.value) - parseInt(this.#_sliderL.value) <= this.#_minGap){
             this.#_sliderR.value = parseInt(this.#_sliderL.value) + this.#_minGap;
+            //console.log("slide r correction", this.#_sliderL.value)
         }
         this.#colorizeTrack();
         this.#placeThumbTop(this.#_sliderR, this.#_thumbTopR)
