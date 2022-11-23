@@ -282,16 +282,20 @@ class Element extends HTMLElement {
         thumb.style.left = x +"px"
     }
 
+    getIndices() {
+        return {
+            startIdx: Number.parseInt(this.#_sliderL.value),
+            endIdx: Number.parseInt(this.#_sliderR.value)
+        }
+    }
+
     #fireDragging() {
         if(this.#_isLocked) {return}
 
         this.dispatchEvent(
             new CustomEvent("dragging", { 
                 composed: true,
-                detail:{
-                    left:this.#_sliderL.value,
-                    right:this.#_sliderR.value
-                } 
+                detail: this.getIndices() 
             })
           );
     }
@@ -302,10 +306,7 @@ class Element extends HTMLElement {
         this.dispatchEvent(
             new CustomEvent("selected", { 
                 composed: true,
-                detail:{
-                    left:this.#_sliderL.value,
-                    right:this.#_sliderR.value
-                } 
+                detail: this.getIndices()
             })
           );
     }
