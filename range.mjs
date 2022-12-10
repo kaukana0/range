@@ -80,7 +80,7 @@ function getCSS(thumbWidthInPixel) {
         margin-top: -14px;
         background-color: transparent;
         cursor: pointer;
-        pointer-events: auto;       /* mind those when debugging */
+        pointer-events: auto;       /* mind those when debugging; */
     }
     input[type="range"]::-moz-range-thumb{
         -webkit-appearance: none;
@@ -316,8 +316,8 @@ class Element extends HTMLElement {
 
     setLocked(isLocked) {
         this.#_isLocked = isLocked
-        this.#_thumbTopL.style.pointerEvents = isLocked ? "none;" : "auto;"
-        this.#_thumbTopR.style.pointerEvents = isLocked ? "none;" : "auto;"
+        this.#_thumbTopL.style.pointerEvents = isLocked ? "auto" : "none"
+        this.#_thumbTopR.style.pointerEvents = isLocked ? "auto" : "none"
     }
 }
 
