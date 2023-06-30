@@ -106,19 +106,21 @@ function getCSS(thumbWidthInPixel) {
     .thumbtop {
         position: absolute; 
         width: ${thumbWidthInPixel}px;
-        height: 30px;
+        height: 36px;
         margin-top: -18px; 
-        background-color: white;
-        border: 3px solid black;
+        background-color: #0E47CB;
+        color: white;
         border-radius: 10px;
         pointer-events: none; 
+        font-size: 1rem;
+        font-weight: 600;
         text-align: center;
-        line-height: 30px;  /* trick to v-center text */
+        line-height: 36px;  /* trick to v-center text */
     }
     #thumbTopL {
         left: 0px;
     }
-    #thumbtop2 {
+    #thumbtopR {
         right: 0px; 
     }
 
@@ -132,9 +134,10 @@ class Element extends HTMLElement {
     #_sliderR
     #_thumbTopL
     #_thumbTopR
-    #_minGap        // sliders can't get closer together than this; unit is [value]
+    #_minGap                // sliders can't get closer together than this; unit is [value]
     #_sliderTrack
     #_isLocked
+    #_isSingle = false      // just one handle, not two
 
 	constructor() {
 		super()
@@ -157,8 +160,18 @@ class Element extends HTMLElement {
         this.#_thumbTopR = this.shadowRoot.getElementById("thumbtopR")
         this.#_sliderTrack = this.shadowRoot.querySelector(".slider-track")
 
+        if(this.hasAttribute("single")) {
+            this.#_isSingle = true
+            this.#_sliderR.setAttribute("disabled","true")
+            this.#_sliderR.style.pointerEvents = "none"
+            this.#_sliderR.style.cursor=""
+            this.#_thumbTopR.style.display = "none"
+        }
+
         this.#_sliderL.addEventListener('input', (event) => { this.#slideL(); this.#fireDragging() })
-        this.#_sliderR.addEventListener('input', (event) => { this.#slideR(); this.#fireDragging() })
+        if(!this.#_isSingle) {
+            this.#_sliderR.addEventListener('input', (event) => { this.#slideR(); this.#fireDragging() })
+        }
         this.#_sliderL.addEventListener('mouseup', (event) => { this.#fireSelected() })
         this.#_sliderR.addEventListener('mouseup', (event) => { this.#fireSelected() })
         this.#_sliderL.addEventListener('touchend', (event) => { this.#fireSelected() })
@@ -170,7 +183,7 @@ class Element extends HTMLElement {
 			}
 		})
         this.#_sliderR.addEventListener("keyup", ke => {
-            if(this.#_isLocked) {return}
+            if(this.#_isLocked || this.#_isSingle) {return}
             if(ke.code.startsWith("Arrow")) {
 				this.#fireDragging(); this.#fireSelected()
 			}
@@ -183,7 +196,7 @@ class Element extends HTMLElement {
     }
 
 	static get observedAttributes() {
-		return ["min", "max", "mingap", "valuel", "valuer", "textl", "textr"]
+		return ["min", "max", "mingap", "valuel", "valuer", "textl", "textr", "single"]
 	}
 
 	attributeChangedCallback(name, oldVal, newVal) {
@@ -218,6 +231,7 @@ class Element extends HTMLElement {
             case "textr":
                 this.#_thumbTopR.textContent = newVal
                 break
+            case "single":
             default:
                 console.debug("range: no such attribute " + name)
         }
