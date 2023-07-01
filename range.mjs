@@ -196,11 +196,10 @@ class Element extends HTMLElement {
     }
 
 	static get observedAttributes() {
-		return ["min", "max", "mingap", "valuel", "valuer", "textl", "textr", "single"]
+		return ["min", "max", "mingap", "valuel", "valuer", "textl", "textr", "single", "isinited"]
 	}
 
 	attributeChangedCallback(name, oldVal, newVal) {
-        //console.log(name,newVal)
         switch(name) {
             case "min":
                 this.#_sliderL.min = Number(newVal)
@@ -232,6 +231,8 @@ class Element extends HTMLElement {
                 this.#_thumbTopR.textContent = newVal
                 break
             case "single":
+            case "isinited":
+                    break;
             default:
                 console.debug("range: no such attribute " + name)
         }
@@ -244,8 +245,6 @@ class Element extends HTMLElement {
     #update() {
         this.#slideL()
         this.#slideR()
-        this.#fireDragging()
-        this.#fireSelected()
     }
 
     get valuel() { return this.#_sliderL.value }
@@ -305,7 +304,6 @@ class Element extends HTMLElement {
 
     #fireDragging() {
         if(this.#_isLocked) {return}
-
         this.dispatchEvent(
             new CustomEvent("dragging", { 
                 composed: true,
@@ -316,7 +314,6 @@ class Element extends HTMLElement {
 
     #fireSelected() {
         if(this.#_isLocked) {return}
-
         this.dispatchEvent(
             new CustomEvent("selected", { 
                 composed: true,
