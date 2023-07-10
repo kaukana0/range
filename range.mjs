@@ -138,15 +138,15 @@ class Element extends HTMLElement {
     #_sliderTrack
     #_isLocked
     #_isSingle = false      // just one handle, not two
+    #_thumbWidthInPixel = 20
 
 	constructor() {
 		super()
 
-        let thumbWidthInPixel = 20
         if(this.hasAttribute("thumbWidthInPixel")) {
-            thumbWidthInPixel = Number(this.getAttribute("thumbWidthInPixel"))
+            this.#_thumbWidthInPixel = Number(this.getAttribute("thumbWidthInPixel"))
         }
-        template.innerHTML += getCSS(thumbWidthInPixel)
+        template.innerHTML += getCSS(this.#_thumbWidthInPixel)
 
 		this.attachShadow({ mode: 'open' })
 		this.shadowRoot.appendChild(template.content.cloneNode(true))
@@ -165,6 +165,7 @@ class Element extends HTMLElement {
             this.#_sliderR.setAttribute("disabled","true")
             this.#_sliderR.style.pointerEvents = "none"
             this.#_sliderR.style.cursor=""
+            this.#_sliderR.style.display = "none"
             this.#_thumbTopR.style.display = "none"
         }
 
@@ -216,8 +217,7 @@ class Element extends HTMLElement {
                 this.#update()
                 break
             case "valuel":
-                const b = Number(newVal)
-                this.#_sliderL.value = b
+                this.#_sliderL.value = Number(newVal)
                 this.#update()
                 break
             case "valuer":
@@ -285,7 +285,7 @@ class Element extends HTMLElement {
     #placeThumbTop(slider, thumb) {
         const nbrSections = (slider.max-slider.min)
         const nbrSettings = nbrSections+1
-        const thumbWidth = thumb.getBoundingClientRect( ).width
+        const thumbWidth = this.#_thumbWidthInPixel
         const thumbWidthTotal = nbrSettings * thumbWidth
         const gapWidthTotal = slider.getBoundingClientRect().width - thumbWidthTotal
         const gapWidth = gapWidthTotal/nbrSections
