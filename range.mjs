@@ -173,20 +173,20 @@ class Element extends HTMLElement {
         if(!this.#_isSingle) {
             this.#_sliderR.addEventListener('input', (event) => { this.#slideR(); this.#fireDragging() })
         }
-        this.#_sliderL.addEventListener('mouseup', (event) => { this.#fireSelected() })
-        this.#_sliderR.addEventListener('mouseup', (event) => { this.#fireSelected() })
-        this.#_sliderL.addEventListener('touchend', (event) => { this.#fireSelected() })
-        this.#_sliderR.addEventListener('touchend', (event) => { this.#fireSelected() })
+        this.#_sliderL.addEventListener('mouseup', (event) => { this.fireSelected() })
+        this.#_sliderR.addEventListener('mouseup', (event) => { this.fireSelected() })
+        this.#_sliderL.addEventListener('touchend', (event) => { this.fireSelected() })
+        this.#_sliderR.addEventListener('touchend', (event) => { this.fireSelected() })
         this.#_sliderL.addEventListener("keyup", ke => {
             if(this.#_isLocked) {return}
             if(ke.code.startsWith("Arrow")) {
-				this.#fireDragging(); this.#fireSelected()
+				this.#fireDragging(); this.fireSelected()
 			}
 		})
         this.#_sliderR.addEventListener("keyup", ke => {
             if(this.#_isLocked || this.#_isSingle) {return}
             if(ke.code.startsWith("Arrow")) {
-				this.#fireDragging(); this.#fireSelected()
+				this.#fireDragging(); this.fireSelected()
 			}
 		})
 
@@ -312,7 +312,7 @@ class Element extends HTMLElement {
           );
     }
 
-    #fireSelected() {
+    fireSelected() {
         if(this.#_isLocked) {return}
         this.dispatchEvent(
             new CustomEvent("selected", { 
