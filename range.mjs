@@ -138,6 +138,7 @@ class Element extends HTMLElement {
     #_sliderTrack
     #_isLocked
     #_isSingle = false      // just one handle, not two
+    #_isSingularValue = false
     #_thumbWidthInPixel = 20
 
 	constructor() {
@@ -197,7 +198,7 @@ class Element extends HTMLElement {
     }
 
 	static get observedAttributes() {
-		return ["min", "max", "mingap", "valuel", "valuer", "textl", "textr", "single", "isinited"]
+		return ["min", "max", "mingap", "valuel", "valuer", "textl", "textr", "single", "isinited", "singularvalue"]
 	}
 
 	attributeChangedCallback(name, oldVal, newVal) {
@@ -230,6 +231,8 @@ class Element extends HTMLElement {
             case "textr":
                 this.#_thumbTopR.textContent = newVal
                 break
+            case "singularvalue":
+                this.#_isSingularValue = newVal==="true"
             case "single":
             case "isinited":
                     break;
@@ -269,9 +272,18 @@ class Element extends HTMLElement {
     }
     
     #colorizeTrack(){
-        const percent1 = (this.#_sliderL.value / this.#_sliderL.max) * 100;
-        const percent2 = (this.#_sliderR.value / this.#_sliderR.max) * 100;     // assume L.max == R.max
-        this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , black ${percent1}% , black ${percent2}%, #dadae5 ${percent2}%)`;
+        if(this.#_isSingle) {
+            const percent = (Number(this.#_sliderL.value)-Number(this.#_sliderL.min)) / (this.#_sliderL.max-Number(this.#_sliderL.min)) * 100
+            if(this.#_isSingularValue) {
+                this.#_sliderTrack.style.background = "#dadae5"
+            } else {
+                this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent}% , blue ${percent}%, blue)`;
+            }
+        } else {
+            const percent1 = (this.#_sliderL.value / this.#_sliderL.max) * 100;
+            const percent2 = (this.#_sliderR.value / this.#_sliderR.max) * 100;     // assume L.max == R.max
+            this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , black ${percent1}% , black ${percent2}%, #dadae5 ${percent2}%)`;
+        }
     }
 
     /*
