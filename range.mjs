@@ -277,7 +277,7 @@ class Element extends HTMLElement {
             if(this.#_isSingularValue) {
                 this.#_sliderTrack.style.background = "#dadae5"
             } else {
-                this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent}% , blue ${percent}%, blue)`;
+                this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent}%, #0E47CB ${percent}%, #0E47CB)`;
             }
         } else {
             const percent1 = (this.#_sliderL.value / this.#_sliderL.max) * 100;
