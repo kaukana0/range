@@ -117,11 +117,17 @@ function getCSS(thumbWidthInPixel) {
         text-align: center;
         line-height: 36px;  /* trick to v-center text */
     }
+    .thumbtop:focus-visible { background-color: pink }
     #thumbTopL {
         left: 0px;
     }
     #thumbtopR {
         right: 0px; 
+    }
+
+    .focussed {
+        outline: 2px solid black;
+        outline-offset: 2px;
     }
 
     </style>`
@@ -190,6 +196,15 @@ class Element extends HTMLElement {
 				this.#fireDragging(); this.fireSelected()
 			}
 		})
+        this.#_sliderL.addEventListener("focus", e => {
+            if(this.#_isLocked) {return}
+            this.#_thumbTopL.classList.add("focussed")
+		})
+        this.#_sliderL.addEventListener("focusout", e => {
+            if(this.#_isLocked) {return}
+            this.#_thumbTopL.classList.remove("focussed")
+		})
+
 
         window.addEventListener('resize', () => {
             this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
