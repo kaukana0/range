@@ -320,6 +320,10 @@ class Element extends HTMLElement {
         const x = (thumbWidth + gapWidth) * absValue
 
         thumb.style.left = x +"px"
+
+        if(slider.getBoundingClientRect().width <= 0) {
+            //console.warn("range: no width. maybe element was invisible.")
+        }
     }
 
     getIndices() {
