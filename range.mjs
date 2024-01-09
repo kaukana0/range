@@ -209,7 +209,9 @@ class Element extends HTMLElement {
         window.addEventListener('resize', () => {
             this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
             this.#placeThumbTop(this.#_sliderR, this.#_thumbTopR)
-        });
+        })
+
+        this.setAttribute("role", "slider")
     }
 
 	static get observedAttributes() {
@@ -221,11 +223,13 @@ class Element extends HTMLElement {
             case "min":
                 this.#_sliderL.min = Number(newVal)
                 this.#_sliderR.min = Number(newVal)
+                this.setAttribute("aria-valuemin", newVal)
                 this.#update()
                 break
             case "max":
                 this.#_sliderL.max = Number(newVal)
                 this.#_sliderR.max = Number(newVal)
+                this.setAttribute("aria-valuemax", newVal)
                 this.#update()
                 break
             case "mingap":
@@ -234,17 +238,21 @@ class Element extends HTMLElement {
                 break
             case "valuel":
                 this.#_sliderL.value = Number(newVal)
+                this.setAttribute("aria-valuenow", newVal)
                 this.#update()
                 break
             case "valuer":
                 this.#_sliderR.value = Number(newVal)
+                this.setAttribute("aria-valuenow", newVal)
                 this.#update()
                 break
             case "textl":
                 this.#_thumbTopL.textContent = newVal
+                this.setAttribute("aria-valuenow", newVal)
                 break
             case "textr":
                 this.#_thumbTopR.textContent = newVal
+                this.setAttribute("aria-valuenow", newVal)
                 break
             case "singularvalue":
                 this.#_isSingularValue = newVal==="true"
