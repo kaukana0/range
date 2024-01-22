@@ -196,6 +196,8 @@ class Element extends HTMLElement {
 				this.#fireDragging(); this.fireSelected()
 			}
 		})
+
+        // :-/
         this.#_sliderL.addEventListener("focus", e => {
             if(this.#_isLocked) {return}
             this.#_thumbTopL.classList.add("focussed")
@@ -204,7 +206,14 @@ class Element extends HTMLElement {
             if(this.#_isLocked) {return}
             this.#_thumbTopL.classList.remove("focussed")
 		})
-
+        this.#_sliderR.addEventListener("focus", e => {
+            if(this.#_isLocked) {return}
+            this.#_thumbTopR.classList.add("focussed")
+		})
+        this.#_sliderR.addEventListener("focusout", e => {
+            if(this.#_isLocked) {return}
+            this.#_thumbTopR.classList.remove("focussed")
+		})
 
         window.addEventListener('resize', () => {
             this.#placeThumbTop(this.#_sliderL, this.#_thumbTopL)
@@ -305,7 +314,7 @@ class Element extends HTMLElement {
         } else {
             const percent1 = (this.#_sliderL.value / this.#_sliderL.max) * 100;
             const percent2 = (this.#_sliderR.value / this.#_sliderR.max) * 100;     // assume L.max == R.max
-            this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , black ${percent1}% , black ${percent2}%, #dadae5 ${percent2}%)`;
+            this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #0E47CB ${percent1}% , #0E47CB ${percent2}%, #dadae5 ${percent2}%)`;
         }
     }
 
