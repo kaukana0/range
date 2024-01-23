@@ -199,19 +199,15 @@ class Element extends HTMLElement {
 
         // :-/
         this.#_sliderL.addEventListener("focus", e => {
-            if(this.#_isLocked) {return}
             this.#_thumbTopL.classList.add("focussed")
 		})
         this.#_sliderL.addEventListener("focusout", e => {
-            if(this.#_isLocked) {return}
             this.#_thumbTopL.classList.remove("focussed")
 		})
         this.#_sliderR.addEventListener("focus", e => {
-            if(this.#_isLocked) {return}
             this.#_thumbTopR.classList.add("focussed")
 		})
         this.#_sliderR.addEventListener("focusout", e => {
-            if(this.#_isLocked) {return}
             this.#_thumbTopR.classList.remove("focussed")
 		})
 
