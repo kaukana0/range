@@ -3,6 +3,26 @@
 it has 2 handles for min and max.
 there's also a "single" mode w/ just 1 handle.
 
+## API
+
+min
+max             - the numerical range to select from (unitless)
+mingap          - min selectable number of steps (eg to avoid overlapping of handles)
+valuel          - a getter
+valuer          - a getter, both set the handle's position
+textl
+textr
+single
+isinited
+singularvalue
+
+setLocked()
+getIndices()
+
+all the above are attributes, unless noted otherwise.
+
+events: "dragging" (fired on each step) and "selected" (after finishing selection).
+
 ## single mode
 
 It's enabled when element has an attribute named "single".
