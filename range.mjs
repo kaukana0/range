@@ -106,16 +106,16 @@ function getCSS(thumbWidthInPixel) {
     .thumbtop {
         position: absolute; 
         width: ${thumbWidthInPixel}px;
-        height: 36px;
-        margin-top: -18px; 
+        height: 30px;
+        margin-top: -14px; 
         background-color: #0E47CB;
         color: white;
-        border-radius: 10px;
+        border-radius: 8px;
         pointer-events: none; 
         font-size: 1rem;
         font-weight: 600;
         text-align: center;
-        line-height: 36px;  /* trick to v-center text */
+        line-height: 32px;  /* trick to v-center text */
     }
     .thumbtop:focus-visible { background-color: pink }
     #thumbTopL {
@@ -303,14 +303,14 @@ class Element extends HTMLElement {
         if(this.#_isSingle) {
             const percent = (Number(this.#_sliderL.value)-Number(this.#_sliderL.min)) / (this.#_sliderL.max-Number(this.#_sliderL.min)) * 100
             if(this.#_isSingularValue) {
-                this.#_sliderTrack.style.background = "#dadae5"
+                this.#_sliderTrack.style.background = "#bdd1cf"
             } else {
-                this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent}%, #0E47CB ${percent}%, #0E47CB)`;
+                this.#_sliderTrack.style.background = `linear-gradient(to right, #bdd1cf ${percent}%, #0E47CB ${percent}%, #0E47CB)`;
             }
         } else {
             const percent1 = (this.#_sliderL.value / this.#_sliderL.max) * 100;
             const percent2 = (this.#_sliderR.value / this.#_sliderR.max) * 100;     // assume L.max == R.max
-            this.#_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #0E47CB ${percent1}% , #0E47CB ${percent2}%, #dadae5 ${percent2}%)`;
+            this.#_sliderTrack.style.background = `linear-gradient(to right, #bdd1cf ${percent1}% , #0E47CB ${percent1}% , #0E47CB ${percent2}%, #bdd1cf ${percent2}%)`;
         }
     }
 
